@@ -4,16 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VerdeOfertas - Tu Tienda Online</title>
-    <!-- Carga de Tailwind CSS para estilos rápidos -->
+    
+    <!-- Carga de Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Iconos de Lucide para un look más moderno -->
+    
+    <!-- Iconos de Lucide -->
     <script type="module" src="https://unpkg.com/lucide-react@latest/dist/umd/lucide-react.js"></script>
     <style>
-        /* Estilo para la fuente Inter, que usa Tailwind por defecto */
+        /* Estilo para la fuente Inter */
         body {
             font-family: 'Inter', sans-serif;
         }
-        /* Transiciones suaves para el modal */
+        /* Transiciones suaves para los modales */
         .modal {
             transition: opacity 0.25s ease, visibility 0.25s ease;
         }
@@ -27,6 +29,19 @@
         #sale-product-grid {
             -ms-overflow-style: none;  /* IE y Edge */
             scrollbar-width: none;  /* Firefox */
+            scroll-behavior: smooth; /* Desplazamiento suave */
+        }
+        /* Estilo para la imagen miniatura activa */
+        .thumbnail-active {
+            border-color: #16a34a; /* green-600 */
+            box-shadow: 0 0 0 2px #dcfce7; /* green-100 */
+        }
+        /* Estilos para los botones del carrusel */
+        .carousel-btn {
+            @apply absolute top-1/2 -translate-y-1/2 bg-white bg-opacity-80 rounded-full p-2 text-gray-700 shadow-md transition-all duration-200 hover:bg-opacity-100 hover:scale-110 hidden md:flex;
+        }
+        .carousel-btn:disabled {
+            @apply opacity-30 cursor-not-allowed;
         }
     </style>
 </head>
@@ -40,13 +55,13 @@
     <header class="bg-green-600 shadow-md sticky top-0 z-30 text-white">
         <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
-                <!-- Logo o Título de la Tienda -->
+                <!-- Logo -->
                 <div class="flex-shrink-0 flex items-center">
                     <span class="text-3xl font-bold">Verde</span>
                     <span class="text-3xl font-light">Ofertas</span>
                 </div>
 
-                <!-- Botón del Carrito (Móvil) -->
+                <!-- Botón Carrito (Móvil) -->
                 <div class="sm:hidden">
                     <button id="cart-button-mobile" class="relative p-2 rounded-full hover:bg-green-700 focus:outline-none">
                         <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
@@ -54,7 +69,7 @@
                     </button>
                 </div>
 
-                <!-- Botón del Carrito (Escritorio) -->
+                <!-- Botón Carrito (Escritorio) -->
                 <div class="hidden sm:block">
                     <button id="cart-button-desktop" class="relative flex items-center gap-2 p-2 px-4 rounded-full hover:bg-green-700 focus:outline-none">
                         <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
@@ -64,7 +79,7 @@
                 </div>
             </div>
             
-            <!-- Barra de Búsqueda (Debajo del logo en una fila separada) -->
+            <!-- Barra de Búsqueda -->
             <div class="py-3">
                  <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -83,29 +98,28 @@
 
     <!-- 
       *************************************************
-      * NUEVA SECCIÓN: OFERTAS DEL DÍA      *
+      * SECCIÓN DE OFERTAS MEJORADA      *
       *************************************************
     -->
     <section class="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <h2 class="text-3xl font-bold mb-4 text-green-800 flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8 text-orange-500"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
-            Ofertas del Día
-        </h2>
-        <div id="sale-product-grid" class="flex overflow-x-auto gap-4 pb-4">
-            <!-- Los productos en oferta se insertarán aquí dinámicamente -->
-            <!-- Ejemplo de tarjeta de oferta:
-            <div class="bg-white rounded-lg shadow-lg overflow-hidden min-w-[220px] w-[220px] relative">
-                <div class="absolute top-2 left-2 bg-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase shadow-lg z-10">Oferta</div>
-                <img src="https://placehold.co/300x300" alt="Producto" class="w-full h-36 object-cover">
-                <div class="p-3">
-                    <h3 class="text-sm font-semibold text-gray-800 truncate">Nombre Producto</h3>
-                    <div class="mt-1">
-                        <p class="text-lg font-bold text-orange-600">$9.99</p>
-                        <p class="text-xs text-gray-500 line-through">$15.99</p>
-                    </div>
-                </div>
+        <div class="bg-white rounded-xl shadow-lg p-4 relative overflow-hidden">
+            <h2 class="text-3xl font-bold mb-4 text-green-800 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8 text-orange-500"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+                Ofertas del Día
+            </h2>
+            
+            <!-- Contenedor del Carrusel -->
+            <div id="sale-product-grid" class="flex overflow-x-auto gap-4 pb-4">
+                <!-- Los productos en oferta se insertarán aquí dinámicamente -->
             </div>
-            -->
+            
+            <!-- Botones del Carrusel -->
+            <button id="sale-scroll-left" class="carousel-btn left-6">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </button>
+            <button id="sale-scroll-right" class="carousel-btn right-6">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
         </div>
     </section>
 
@@ -117,12 +131,56 @@
     <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <h2 class="text-2xl font-bold mb-4 text-gray-800">Todos los Productos</h2>
         <div id="product-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
-            <!-- Los productos se insertarán aquí dinámicamente con JavaScript -->
+            <!-- Los productos se insertarán aquí dinámicamente -->
         </div>
         <div id="no-results" class="hidden text-center text-gray-500 mt-10 text-xl">
             <p>No se encontraron productos que coincidan con tu búsqueda.</p>
         </div>
     </main>
+
+    <!-- 
+      *************************************************
+      * MODAL: DETALLES DEL PRODUCTO      *
+      *************************************************
+    -->
+    <div id="product-detail-modal" class="modal fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-50 invisible opacity-0">
+        <div class="modal-content bg-white rounded-lg shadow-2xl w-11/12 md:w-3/4 lg:w-2/3 max-w-4xl p-6 transform -translate-y-10">
+            <div class="flex justify-between items-center pb-3 border-b mb-4">
+                <h2 id="detail-product-name" class="text-2xl font-bold text-gray-800"></h2>
+                <button id="close-detail-btn" class="p-1 rounded-full text-gray-500 hover:bg-gray-200">
+                    <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            
+            <div class="flex flex-col md:flex-row gap-6">
+                <!-- Galería de Imágenes -->
+                <div class="md:w-1/2 flex flex-col items-center">
+                    <img id="detail-main-image" src="https://placehold.co/600x600" alt="Producto principal" class="w-full h-80 object-contain rounded-lg border border-gray-200 mb-4">
+                    <div id="detail-thumbnails" class="flex gap-2 overflow-x-auto w-full justify-center">
+                        <!-- Miniaturas se insertan aquí -->
+                    </div>
+                </div>
+
+                <!-- Detalles y Botón de Compra -->
+                <div class="md:w-1/2 flex flex-col">
+                    <p id="detail-product-description" class="text-gray-700 text-base mb-4"></p>
+                    <div id="detail-product-price-info" class="mb-6">
+                        <!-- Precio se inserta aquí -->
+                    </div>
+                    <button 
+                        id="detail-add-to-cart-btn"
+                        class="w-full bg-green-600 text-white py-3 px-4 rounded-lg text-lg font-semibold hover:bg-green-700 transition-colors mt-auto"
+                        data-id=""
+                        data-name=""
+                        data-price=""
+                    >
+                        Añadir al carrito
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- 
       *************************************************
@@ -211,58 +269,194 @@
             // -----------------------------------------------------------------
             //  ¡¡¡ IMPORTANTE !!!
             //  Reemplaza este número con tu número de WhatsApp.
-            //  Usa el formato internacional, sin "+" ni "00". 
             // -----------------------------------------------------------------
             const WHATSAPP_NUMBER = '18091234567'; // <--- CAMBIA ESTE NÚMERO
 
-            // Datos de ejemplo de los productos
+            // Datos de ejemplo de los productos (con 'stock' para ofertas)
             const mockProducts = [
                 // Productos en Oferta
-                { id: 1, name: 'Camiseta Verde (Oferta)', price: 9.99, oldPrice: 15.99, onSale: true, image: 'https://placehold.co/300x300/22c55e/f0fdf4?text=Camiseta' },
-                { id: 2, name: 'Decoración Colgante', price: 7.50, oldPrice: 12.00, onSale: true, image: 'https://placehold.co/300x300/a3e635/f7fee7?text=Decoración' },
-                { id: 3, name: 'Lámpara de Escritorio LED', price: 22.90, oldPrice: 35.00, onSale: true, image: 'https://placehold.co/300x300/84cc16/ecfccb?text=Lámpara' },
-                { id: 4, name: 'Reloj de Pared Moderno', price: 18.00, oldPrice: 25.00, onSale: true, image: 'https://placehold.co/300x300/f97316/fff7ed?text=Reloj' },
-                { id: 5, name: 'Set de Tazas (Oferta)', price: 12.00, oldPrice: 20.00, onSale: true, image: 'https://placehold.co/300x300/fb923c/fff7ed?text=Tazas' },
+                { 
+                    id: 1, 
+                    name: 'Camiseta Verde de Algodón (Oferta)', 
+                    price: 9.99, 
+                    oldPrice: 15.99, 
+                    onSale: true, 
+                    stock: 20,
+                    description: 'Cómoda camiseta de algodón 100% orgánico...',
+                    images: ['https://placehold.co/300x300/22c55e/f0fdf4?text=Camiseta_Frontal', 'https://placehold.co/300x300/22c55e/f0fdf4?text=Camiseta_Espalda', 'https://placehold.co/300x300/22c55e/f0fdf4?text=Camiseta_Detalle']
+                },
+                { 
+                    id: 2, 
+                    name: 'Decoración Colgante de Hojas Verdes', 
+                    price: 7.50, 
+                    oldPrice: 12.00, 
+                    onSale: true, 
+                    stock: 15,
+                    description: 'Hermosa decoración artificial para el hogar...',
+                    images: ['https://placehold.co/300x300/a3e635/f7fee7?text=Decoración_1', 'https://placehold.co/300x300/a3e635/f7fee7?text=Decoración_2', 'https://placehold.co/300x300/a3e635/f7fee7?text=Decoración_3']
+                },
+                { 
+                    id: 3, 
+                    name: 'Lámpara de Escritorio LED Recargable', 
+                    price: 22.90, 
+                    oldPrice: 35.00, 
+                    onSale: true, 
+                    stock: 10,
+                    description: 'Lámpara LED con intensidad regulable...',
+                    images: ['https://placehold.co/300x300/84cc16/ecfccb?text=Lámpara_Frontal', 'https://placehold.co/300x300/84cc16/ecfccb?text=Lámpara_Encendida', 'https://placehold.co/300x300/84cc16/ecfccb?text=Lámpara_Lateral']
+                },
+                { 
+                    id: 4, 
+                    name: 'Reloj de Pared Minimalista', 
+                    price: 18.00, 
+                    oldPrice: 25.00, 
+                    onSale: true, 
+                    stock: 30,
+                    description: 'Reloj de pared con diseño minimalista...',
+                    images: ['https://placehold.co/300x300/f97316/fff7ed?text=Reloj_Frente', 'https://placehold.co/300x300/f97316/fff7ed?text=Reloj_Angulo', 'https://placehold.co/300x300/f97316/fff7ed?text=Reloj_Detalle']
+                },
+                { 
+                    id: 5, 
+                    name: 'Set de Tazas de Café Verdes (x4)', 
+                    price: 12.00, 
+                    oldPrice: 20.00, 
+                    onSale: true, 
+                    stock: 25,
+                    description: 'Set de 4 tazas de cerámica de alta calidad...',
+                    images: ['https://placehold.co/300x300/fb923c/fff7ed?text=Tazas_Juego', 'https://placehold.co/300x300/fb923c/fff7ed?text=Tazas_Individual', 'https://placehold.co/300x300/fb923c/fff7ed?text=Tazas_Apiladas']
+                },
+                { 
+                    id: 17, 
+                    name: 'Audífonos Inalámbricos Verdes', 
+                    price: 49.99,
+                    oldPrice: 79.99,
+                    onSale: true,
+                    stock: 18,
+                    description: 'Audífonos Bluetooth con excelente calidad de sonido...',
+                    images: ['https://placehold.co/300x300/059669/d1fae5?text=Audifonos_Frente', 'https://placehold.co/300x300/059669/d1fae5?text=Audifonos_Lateral', 'https://placehold.co/300x300/059669/d1fae5?text=Audifonos_Estuche']
+                },
+                { 
+                    id: 18, 
+                    name: 'Libreta Ecológica Verde (Oferta)', 
+                    price: 5.50,
+                    oldPrice: 8.50,
+                    onSale: true,
+                    stock: 50,
+                    description: 'Libreta de tapas duras hecha con materiales reciclados...',
+                    images: ['https://placehold.co/300x300/65a30d/f0fdf4?text=Libreta_Cerrada', 'https://placehold.co/300x300/65a30d/f0fdf4?text=Libreta_Abierta', 'https://placehold.co/300x300/65a30d/f0fdf4?text=Libreta_Detalle']
+                },
 
                 // Productos Regulares
-                { id: 6, name: 'Jean Azul Clásico', price: 45.50, image: 'https://placehold.co/300x300/dbeafe/1e3a8a?text=Jean' },
-                { id: 7, name: 'Zapatillas Deportivas', price: 79.90, image: 'https://placehold.co/300x300/dcfce7/166534?text=Zapatillas' },
-                { id: 8, name: 'Gorra de Béisbol Negra', price: 22.00, image: 'https://placehold.co/300x300/fee2e2/991b1b?text=Gorra' },
-                { id: 9, name: 'Mochila Urbana Gris', price: 55.25, image: 'https://placehold.co/300x300/e5e7eb/1f2937?text=Mochila' },
-                { id: 10, name: 'Lentes de Sol Aviador', price: 30.00, image: 'https://placehold.co/300x300/fef3c7/92400e?text=Lentes' },
-                { id: 11, name: 'Sudadera con Capucha Gris', price: 42.00, image: 'https://placehold.co/300x300/e2e8f0/475569?text=Sudadera' },
-                { id: 12, name: 'Pantalón Cargo Verde', price: 48.00, image: 'https://placehold.co/300x300/4d7c0f/d9f99d?text=Pantalón' },
-                { id: 13, name: 'Cinturón de Cuero', price: 25.00, image: 'https://placehold.co/300x300/d4d4d4/404040?text=Cinturón' },
-                { id: 14, name: 'Bufanda de Lana', price: 19.99, image: 'https://placehold.co/300x300/e0e7ff/3730a3?text=Bufanda' },
-                { id: 15, name: 'Set de Jardinería Verde', price: 33.50, image: 'https://placehold.co/300x300/16a34a/dcfce7?text=Jardín' },
-                { id: 16, name: 'Maceta de Cerámica', price: 14.00, image: 'https://placehold.co/300x300/f1f5f9/334155?text=Maceta' },
+                { 
+                    id: 6, 
+                    name: 'Jean Azul Clásico para Hombre', 
+                    price: 45.50, 
+                    description: 'Jean de corte recto, color azul oscuro...',
+                    images: ['https://placehold.co/300x300/dbeafe/1e3a8a?text=Jean_Frontal', 'https://placehold.co/300x300/dbeafe/1e3a8a?text=Jean_Trasero', 'https://placehold.co/300x300/dbeafe/1e3a8a?text=Jean_Detalle']
+                },
+                { 
+                    id: 7, 
+                    name: 'Zapatillas Deportivas Ultra Ligeras', 
+                    price: 79.90, 
+                    description: 'Zapatillas ideales para correr...',
+                    images: ['https://placehold.co/300x300/dcfce7/166534?text=Zapatillas_Lateral', 'https://placehold.co/300x300/dcfce7/166534?text=Zapatillas_Frente', 'https://placehold.co/300x300/dcfce7/166534?text=Zapatillas_Suela']
+                },
+                { 
+                    id: 8, 
+                    name: 'Gorra de Béisbol Negra Ajustable', 
+                    price: 22.00, 
+                    description: 'Gorra clásica de béisbol en color negro...',
+                    images: ['https://placehold.co/300x300/fee2e2/991b1b?text=Gorra_Frente', 'https://placehold.co/300x300/fee2e2/991b1b?text=Gorra_Lateral', 'https://placehold.co/300x300/fee2e2/991b1b?text=Gorra_Ajuste']
+                },
+                { 
+                    id: 9, 
+                    name: 'Mochila Urbana Gris con USB', 
+                    price: 55.25, 
+                    description: 'Mochila moderna con compartimento para laptop...',
+                    images: ['https://placehold.co/300x300/e5e7eb/1f2937?text=Mochila_Frente', 'https://placehold.co/300x300/e5e7eb/1f2937?text=Mochila_Abierta', 'https://placehold.co/300x300/e5e7eb/1f2937?text=Mochila_USB']
+                },
+                { 
+                    id: 10, 
+                    name: 'Lentes de Sol Estilo Aviador', 
+                    price: 30.00, 
+                    description: 'Lentes de sol con protección UV400...',
+                    images: ['https://placehold.co/300x300/fef3c7/92400e?text=Lentes_Puestos', 'https://placehold.co/300x300/fef3c7/92400e?text=Lentes_Cerca', 'https://placehold.co/300x300/fef3c7/92400e?text=Lentes_Estuche']
+                },
+                { 
+                    id: 11, 
+                    name: 'Sudadera con Capucha Algodón', 
+                    price: 42.00, 
+                    description: 'Sudadera con capucha y bolsillo canguro...',
+                    images: ['https://placehold.co/300x300/e2e8f0/475569?text=Sudadera_Frente', 'https://placehold.co/300x300/e2e8f0/475569?text=Sudadera_Espalda', 'https://placehold.co/300x300/e2e8f0/475569?text=Sudadera_Capucha']
+                },
+                { 
+                    id: 12, 
+                    name: 'Pantalón Cargo Verde Militar', 
+                    price: 48.00, 
+                    description: 'Pantalón cargo resistente con múltiples bolsillos...',
+                    images: ['https://placehold.co/300x300/4d7c0f/d9f99d?text=Pantalón_Frente', 'https://placehold.co/300x300/4d7c0f/d9f99d?text=Pantalón_Lateral', 'https://placehold.co/300x300/4d7c0f/d9f99d?text=Pantalón_Bolsillo']
+                },
+                { 
+                    id: 13, 
+                    name: 'Cinturón de Cuero Genuino', 
+                    price: 25.00, 
+                    description: 'Cinturón de cuero de alta calidad...',
+                    images: ['https://placehold.co/300x300/d4d4d4/404040?text=Cinturón_Frente', 'https://placehold.co/300x300/d4d4d4/404040?text=Cinturón_Detalle', 'https://placehold.co/300x300/d4d4d4/404040?text=Cinturón_Enrollado']
+                },
+                { 
+                    id: 14, 
+                    name: 'Bufanda de Lana Suave', 
+                    price: 19.99, 
+                    description: 'Bufanda cálida y suave, hecha de lana...',
+                    images: ['https://placehold.co/300x300/e0e7ff/3730a3?text=Bufanda_Abierta', 'https://placehold.co/300x300/e0e7ff/3730a3?text=Bufanda_Doblada', 'https://placehold.co/300x300/e0e7ff/3730a3?text=Bufanda_Textura']
+                },
+                { 
+                    id: 15, 
+                    name: 'Set de Jardinería Básico Verde', 
+                    price: 33.50, 
+                    description: 'Kit esencial para jardinería...',
+                    images: ['https://placehold.co/300x300/16a34a/dcfce7?text=Jardín_Herramientas', 'https://placehold.co/300x300/16a34a/dcfce7?text=Jardín_Empaque', 'https://placehold.co/300x300/16a34a/dcfce7?text=Jardín_Uso']
+                },
+                { 
+                    id: 16, 
+                    name: 'Maceta de Cerámica Verde', 
+                    price: 14.00, 
+                    description: 'Maceta de cerámica esmaltada...',
+                    images: ['https://placehold.co/300x300/f1f5f9/334155?text=Maceta_Frente', 'https://placehold.co/300x300/f1f5f9/334155?text=Maceta_Planta', 'https://placehold.co/300x300/f1f5f9/334155?text=Maceta_Textura']
+                },
             ];
 
             // Estado de la aplicación
-            let cart = []; // El carrito será un array de objetos
+            let cart = [];
 
             // Referencias a elementos del DOM
             const productGrid = document.getElementById('product-grid');
             const saleProductGrid = document.getElementById('sale-product-grid');
             const noResultsDiv = document.getElementById('no-results');
             const searchInput = document.getElementById('search-input');
-            
-            // Botones de Carrito (móvil y escritorio)
             const cartButtons = [document.getElementById('cart-button-mobile'), document.getElementById('cart-button-desktop')];
             const cartCountBadges = [document.getElementById('cart-count-badge-mobile'), document.getElementById('cart-count-badge-desktop')];
-            
-            // Elementos del Modal del Carrito
             const cartModal = document.getElementById('cart-modal');
             const closeCartBtn = document.getElementById('close-cart-btn');
             const cartItems = document.getElementById('cart-items');
             const cartTotal = document.getElementById('cart-total');
             const buyButton = document.getElementById('buy-button');
-
-            // Elementos del Modal de Factura/WhatsApp
             const invoiceModal = document.getElementById('invoice-modal');
             const closeInvoiceBtn = document.getElementById('close-invoice-btn');
             const invoiceText = document.getElementById('invoice-text');
             const whatsappLink = document.getElementById('whatsapp-link');
+            const productDetailModal = document.getElementById('product-detail-modal');
+            const closeDetailBtn = document.getElementById('close-detail-btn');
+            const detailProductName = document.getElementById('detail-product-name');
+            const detailProductDescription = document.getElementById('detail-product-description');
+            const detailMainImage = document.getElementById('detail-main-image');
+            const detailThumbnails = document.getElementById('detail-thumbnails');
+            const detailProductPriceInfo = document.getElementById('detail-product-price-info');
+            const detailAddToCartBtn = document.getElementById('detail-add-to-cart-btn');
+            
+            // Botones del carrusel de ofertas
+            const saleScrollLeft = document.getElementById('sale-scroll-left');
+            const saleScrollRight = document.getElementById('sale-scroll-right');
 
 
             // =================================================================
@@ -270,36 +464,52 @@
             // =================================================================
 
             /**
-             * Crea el HTML para una tarjeta de producto (reutilizable)
-             * @param {object} product - El objeto del producto
-             * @param {string} type - 'grid' (normal) o 'sale' (para el carrusel)
+             * Crea el HTML para una tarjeta de producto
              */
             function createProductCardHTML(product, type = 'grid') {
-                const priceHTML = product.oldPrice
-                    ? `
+                const defaultImage = product.images && product.images.length > 0 ? product.images[0] : 'https://placehold.co/300x300/e0e0e0/333333?text=No+Image';
+                let priceHTML, saleBadgeHTML, stockHTML = '';
+
+                if (product.onSale && product.oldPrice) {
+                    const discount = Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100);
+                    priceHTML = `
                         <div class="flex items-end gap-2 mt-1">
-                            <p class="text-xl md:text-2xl font-bold text-orange-600">$${product.price.toFixed(2)}</p>
+                            <p class="text-xl ${type === 'sale' ? '' : 'md:text-2xl'} font-bold text-orange-600">$${product.price.toFixed(2)}</p>
                             <p class="text-sm text-gray-500 line-through">$${product.oldPrice.toFixed(2)}</p>
                         </div>
-                    `
-                    : `<p class="text-xl md:text-2xl font-bold text-gray-800 mt-1">$${product.price.toFixed(2)}</p>`;
+                    `;
+                    saleBadgeHTML = `
+                        <div class="absolute top-2 ${type === 'grid' ? 'right-2' : 'left-2'} bg-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase shadow-lg z-10">
+                            -${discount}%
+                        </div>
+                    `;
+                    if (type === 'sale' && product.stock) {
+                        stockHTML = `
+                            <div class="w-full bg-orange-100 rounded-full h-2.5 mt-2 overflow-hidden">
+                                <div class="bg-orange-500 h-2.5 rounded-full" style="width: ${product.stock > 50 ? 25 : (product.stock * 2)}%"></div>
+                            </div>
+                            <p class="text-xs text-orange-600 font-semibold mt-1">¡Quedan ${product.stock}!</p>
+                        `;
+                    }
 
-                const saleBadgeHTML = product.onSale
-                    ? `<div class="absolute top-2 ${type === 'grid' ? 'right-2' : 'left-2'} bg-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase shadow-lg z-10">Oferta</div>`
-                    : '';
+                } else {
+                    priceHTML = `<p class="text-xl ${type === 'grid' ? 'md:text-2xl' : ''} font-bold text-gray-800 mt-1">$${product.price.toFixed(2)}</p>`;
+                }
                 
                 const cardWidth = type === 'sale' ? 'min-w-[220px] w-[220px]' : '';
                 const imageHeight = type === 'sale' ? 'h-36' : 'h-48';
                 const padding = type === 'sale' ? 'p-3' : 'p-4';
                 const titleSize = type === 'sale' ? 'text-sm' : 'text-base';
 
+
                 return `
-                    <div class="product-card bg-white rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105 relative ${cardWidth}">
+                    <div class="product-card bg-white rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105 relative cursor-pointer flex flex-col" data-id="${product.id}">
                         ${saleBadgeHTML}
-                        <img src="${product.image}" alt="${product.name}" class="w-full ${imageHeight} object-cover">
+                        <img src="${defaultImage}" alt="${product.name}" class="w-full ${imageHeight} object-cover">
                         <div class="${padding} flex flex-col flex-grow">
                             <h3 class="${titleSize} font-semibold text-gray-800 truncate">${product.name}</h3>
                             ${priceHTML}
+                            ${stockHTML}
                             <button 
                                 class="add-to-cart-btn mt-4 w-full bg-green-600 text-white py-2 px-3 rounded-lg font-semibold hover:bg-green-700 transition-colors text-sm"
                                 data-id="${product.id}"
@@ -315,10 +525,9 @@
 
             /**
              * Renderiza los productos en la cuadrícula principal
-             * @param {Array} products - El array de productos a mostrar
              */
             function renderProducts(products) {
-                productGrid.innerHTML = ''; // Limpiar la cuadrícula
+                productGrid.innerHTML = '';
                 
                 if (products.length === 0) {
                     noResultsDiv.classList.remove('hidden');
@@ -333,14 +542,77 @@
             
             /**
              * Renderiza los productos en el carrusel de ofertas
-             * @param {Array} products - El array de productos en oferta
              */
             function renderSaleProducts(products) {
-                saleProductGrid.innerHTML = ''; // Limpiar la cuadrícula de ofertas
+                saleProductGrid.innerHTML = '';
                 products.forEach(product => {
                     saleProductGrid.innerHTML += createProductCardHTML(product, 'sale');
                 });
             }
+
+            /**
+             * Muestra el modal de detalles de un producto específico
+             */
+            function showProductDetail(productId) {
+                const product = mockProducts.find(p => p.id === productId);
+                if (!product) return;
+
+                detailProductName.textContent = product.name;
+                detailProductDescription.textContent = product.description || 'Sin descripción disponible.';
+
+                // Configurar el botón "Añadir al carrito"
+                detailAddToCartBtn.dataset.id = product.id;
+                detailAddToCartBtn.dataset.name = product.name;
+                detailAddToCartBtn.dataset.price = product.price;
+
+                // Información de precios
+                let priceHtmlContent = '';
+                if (product.oldPrice) {
+                    const discount = Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100);
+                    priceHtmlContent = `
+                        <div class="flex items-end gap-3">
+                            <p class="text-3xl font-bold text-orange-600">$${product.price.toFixed(2)}</p>
+                            <p class="text-lg text-gray-500 line-through">$${product.oldPrice.toFixed(2)}</p>
+                            <span class="bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                                ¡${discount}% DCTO!
+                            </span>
+                        </div>
+                    `;
+                } else {
+                    priceHtmlContent = `<p class="text-3xl font-bold text-gray-800">$${product.price.toFixed(2)}</p>`;
+                }
+                detailProductPriceInfo.innerHTML = priceHtmlContent;
+
+
+                // Cargar imágenes
+                detailThumbnails.innerHTML = '';
+                product.images.forEach((imgSrc, index) => {
+                    const thumbnail = document.createElement('img');
+                    thumbnail.src = imgSrc;
+                    thumbnail.alt = `${product.name} - Vista ${index + 1}`;
+                    thumbnail.classList.add(
+                        'w-16', 'h-16', 'object-cover', 'rounded-lg', 'border-2', 'border-gray-300', 'cursor-pointer',
+                        'hover:border-green-500', 'transition-all', 'duration-200'
+                    );
+                    if (index === 0) {
+                        thumbnail.classList.add('thumbnail-active');
+                        detailMainImage.src = imgSrc;
+                    }
+                    thumbnail.addEventListener('click', () => {
+                        detailMainImage.src = imgSrc;
+                        document.querySelectorAll('#detail-thumbnails img').forEach(t => t.classList.remove('thumbnail-active'));
+                        thumbnail.classList.add('thumbnail-active');
+                    });
+                    detailThumbnails.appendChild(thumbnail);
+                });
+
+                if (product.images.length === 0) {
+                    detailMainImage.src = 'https://placehold.co/600x600/e0e0e0/333333?text=No+Image';
+                }
+
+                toggleModal(productDetailModal, true);
+            }
+
 
             // =================================================================
             //           3. LÓGICA DEL CARRITO Y MODALES
@@ -349,7 +621,7 @@
             function toggleModal(modal, open) {
                 if (open) {
                     modal.classList.remove('invisible', 'opacity-0');
-                    modal.querySelector('.modal-content').classList.remove('-translate-y-10');
+                    modal.querySelector('.modal-content').classList.remove('-translatey-10');
                 } else {
                     modal.classList.add('opacity-0');
                     modal.querySelector('.modal-content').classList.add('-translate-y-10');
@@ -407,12 +679,11 @@
 
                 cartTotal.textContent = `$${total.toFixed(2)}`;
 
-                // Actualizar ambos contadores (móvil y escritorio)
                 cartCountBadges.forEach(badge => {
                     if (totalItems > 0) {
                         badge.textContent = totalItems;
                         badge.classList.remove('hidden');
-                        badge.classList.add('flex'); // Asegurarse de que sea flex para centrar
+                        badge.classList.add('flex');
                     } else {
                         badge.classList.add('hidden');
                         badge.classList.remove('flex');
@@ -450,31 +721,75 @@
 
 
             // =================================================================
-            //           4. MANEJADORES DE EVENTOS
+            //           4. MANEJADORES DE EVENTOS (¡SECCIÓN CORREGIDA!)
             // =================================================================
 
-            // Evento para el buscador (filtra la cuadrícula principal)
+            // Evento para el buscador
             searchInput.addEventListener('input', (e) => {
                 const searchTerm = e.target.value.toLowerCase();
-                // Filtra solo de la lista principal de productos
                 const filteredProducts = mockProducts.filter(product => 
-                    product.name.toLowerCase().includes(searchTerm)
+                    product.name.toLowerCase().includes(searchTerm) ||
+                    (product.description && product.description.toLowerCase().includes(searchTerm))
                 );
-                // Vuelve a renderizar solo la cuadrícula principal
                 renderProducts(filteredProducts);
             });
 
-            // Evento para añadir al carrito (usando delegación en todo el body)
-            document.body.addEventListener('click', (e) => {
-                const button = e.target.closest('.add-to-cart-btn');
-                if (button) {
-                    const id = parseInt(button.dataset.id);
-                    const name = button.dataset.name;
-                    const price = parseFloat(button.dataset.price);
-                    addToCart(id, name, price);
-                }
-            });
+            // Evento para AÑADIR AL CARRITO (desde las tarjetas) y ABRIR DETALLES
+            // Usamos delegación de eventos en las propias cuadrículas
+            function handleGridClick(e) {
+                const addToCartBtn = e.target.closest('.add-to-cart-btn');
+                const productCard = e.target.closest('.product-card');
 
+                if (addToCartBtn) {
+                    // Detener la propagación para que no se abra el modal
+                    e.stopPropagation(); 
+                    
+                    const id = parseInt(addToCartBtn.dataset.id);
+                    const name = addToCartBtn.dataset.name;
+                    const price = parseFloat(addToCartBtn.dataset.price);
+                    addToCart(id, name, price);
+
+                    // Feedback visual
+                    const originalText = addToCartBtn.innerHTML;
+                    addToCartBtn.innerHTML = '¡Añadido!';
+                    addToCartBtn.disabled = true;
+                    setTimeout(() => {
+                        addToCartBtn.innerHTML = 'Añadir al carrito'; // Reset text
+                        addToCartBtn.disabled = false;
+                    }, 1000);
+                    return;
+                }
+
+                if (productCard) {
+                    // Si se hizo clic en la tarjeta (y no en el botón), abrir detalles
+                    const productId = parseInt(productCard.dataset.id);
+                    showProductDetail(productId);
+                }
+            }
+            
+            productGrid.addEventListener('click', handleGridClick);
+            saleProductGrid.addEventListener('click', handleGridClick);
+
+            // Evento para AÑADIR AL CARRITO (desde el modal de detalles)
+            detailAddToCartBtn.addEventListener('click', () => {
+                const id = parseInt(detailAddToCartBtn.dataset.id);
+                const name = detailAddToCartBtn.dataset.name;
+                const price = parseFloat(detailAddToCartBtn.dataset.price);
+                
+                addToCart(id, name, price);
+                
+                // Feedback visual y cierre del modal
+                const originalText = detailAddToCartBtn.textContent;
+                detailAddToCartBtn.textContent = '¡Añadido! ✅';
+                detailAddToCartBtn.classList.add('bg-green-800'); // Un verde más oscuro
+                
+                setTimeout(() => {
+                    detailAddToCartBtn.textContent = originalText;
+                    detailAddToCartBtn.classList.remove('bg-green-800');
+                    toggleModal(productDetailModal, false); 
+                }, 1000);
+            });
+            
             // Evento para eliminar del carrito
             cartItems.addEventListener('click', (e) => {
                 const button = e.target.closest('.remove-from-cart-btn');
@@ -484,7 +799,7 @@
                 }
             });
 
-            // Eventos para abrir el modal del carrito (ambos botones)
+            // Eventos para abrir el modal del carrito
             cartButtons.forEach(button => {
                 button.addEventListener('click', () => toggleModal(cartModal, true));
             });
@@ -495,7 +810,13 @@
                 if (e.target === cartModal) toggleModal(cartModal, false);
             });
 
-            // Evento para el botón de "COMPRAR"
+            // Eventos para cerrar el modal de detalles
+            closeDetailBtn.addEventListener('click', () => toggleModal(productDetailModal, false));
+            productDetailModal.addEventListener('click', (e) => {
+                if (e.target === productDetailModal) toggleModal(productDetailModal, false);
+            });
+
+            // Evento para el botón "COMPRAR"
             buyButton.addEventListener('click', generateInvoice);
 
             // Eventos para cerrar el modal de factura
@@ -504,21 +825,40 @@
                 cart = [];
                 updateCartUI();
             });
+            
+            // Eventos para el carrusel de ofertas
+            saleScrollLeft.addEventListener('click', () => {
+                saleProductGrid.scrollLeft -= 300;
+            });
+            saleScrollRight.addEventListener('click', () => {
+                saleProductGrid.scrollLeft += 300;
+            });
+            
+            // Habilitar/deshabilitar botones del carrusel según el scroll
+            saleProductGrid.addEventListener('scroll', () => {
+                saleScrollLeft.disabled = saleProductGrid.scrollLeft === 0;
+                saleScrollRight.disabled = saleProductGrid.scrollLeft + saleProductGrid.clientWidth >= saleProductGrid.scrollWidth - 10; // -10 para margen de error
+            });
 
 
             // =================================================================
             //           5. INICIALIZACIÓN
             // =================================================================
             
-            // Renderizar los productos en oferta
-            const saleProducts = mockProducts.filter(p => p.onSale);
-            renderSaleProducts(saleProducts);
-
-            // Renderizar todos los productos en la cuadrícula principal
-            renderProducts(mockProducts);
+            // --- CAMBIO AQUÍ: .slice(0, 3) ---
+            // Filtra los productos en oferta Y TOMA SOLO LOS PRIMEROS 3
+            const saleProducts = mockProducts.filter(p => p.onSale).slice(0, 3);
             
-            // Actualizar la UI del carrito
+            renderSaleProducts(saleProducts);
+            renderProducts(mockProducts);
             updateCartUI();
+            
+            // Estado inicial de los botones del carrusel
+            saleScrollLeft.disabled = true;
+            // Comprobar si el scroll es necesario
+            setTimeout(() => {
+                saleScrollRight.disabled = saleProductGrid.scrollWidth <= saleProductGrid.clientWidth;
+            }, 100); 
 
         });
     </script>
