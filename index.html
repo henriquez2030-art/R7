@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VerdeOfertas - Tu Tienda Online</title>
+    <!-- Carga de Tailwind CSS para estilos rápidos -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Iconos de Lucide para un look más moderno -->
+    <script type="module" src="https://unpkg.com/lucide-react@latest/dist/umd/lucide-react.js"></script>
+    <style>
+        /* Estilo para la fuente Inter, que usa Tailwind por defecto */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Transiciones suaves para el modal */
+        .modal {
+            transition: opacity 0.25s ease, visibility 0.25s ease;
+        }
+        .modal-content {
+            transition: transform 0.25s ease;
+        }
+        /* Ocultar la barra de scroll en el carrusel de ofertas */
+        #sale-product-grid::-webkit-scrollbar {
+            display: none; /* Chrome, Safari y Opera */
+        }
+        #sale-product-grid {
+            -ms-overflow-style: none;  /* IE y Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <!-- 
+      *************************************************
+      * ENCABEZADO Y NAVEGACIÓN (TEMA VERDE) *
+      *************************************************
+    -->
+    <header class="bg-green-600 shadow-md sticky top-0 z-30 text-white">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo o Título de la Tienda -->
+                <div class="flex-shrink-0 flex items-center">
+                    <span class="text-3xl font-bold">Verde</span>
+                    <span class="text-3xl font-light">Ofertas</span>
+                </div>
+
+                <!-- Botón del Carrito (Móvil) -->
+                <div class="sm:hidden">
+                    <button id="cart-button-mobile" class="relative p-2 rounded-full hover:bg-green-700 focus:outline-none">
+                        <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                        <span id="cart-count-badge-mobile" class="hidden absolute -top-1 -right-1 w-5 h-5 bg-orange-500 text-white text-xs font-bold rounded-full flex items-center justify-center">0</span>
+                    </button>
+                </div>
+
+                <!-- Botón del Carrito (Escritorio) -->
+                <div class="hidden sm:block">
+                    <button id="cart-button-desktop" class="relative flex items-center gap-2 p-2 px-4 rounded-full hover:bg-green-700 focus:outline-none">
+                        <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                        <span class="font-medium">Carrito</span>
+                        <span id="cart-count-badge-desktop" class="hidden w-5 h-5 bg-orange-500 text-white text-xs font-bold rounded-full items-center justify-center">0</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Barra de Búsqueda (Debajo del logo en una fila separada) -->
+            <div class="py-3">
+                 <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg class="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    </div>
+                    <input
+                        id="search-input"
+                        type="search"
+                        class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-full leading-5 bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm"
+                        placeholder="Buscar en VerdeOfertas..."
+                    >
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- 
+      *************************************************
+      * NUEVA SECCIÓN: OFERTAS DEL DÍA      *
+      *************************************************
+    -->
+    <section class="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <h2 class="text-3xl font-bold mb-4 text-green-800 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8 text-orange-500"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+            Ofertas del Día
+        </h2>
+        <div id="sale-product-grid" class="flex overflow-x-auto gap-4 pb-4">
+            <!-- Los productos en oferta se insertarán aquí dinámicamente -->
+            <!-- Ejemplo de tarjeta de oferta:
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden min-w-[220px] w-[220px] relative">
+                <div class="absolute top-2 left-2 bg-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase shadow-lg z-10">Oferta</div>
+                <img src="https://placehold.co/300x300" alt="Producto" class="w-full h-36 object-cover">
+                <div class="p-3">
+                    <h3 class="text-sm font-semibold text-gray-800 truncate">Nombre Producto</h3>
+                    <div class="mt-1">
+                        <p class="text-lg font-bold text-orange-600">$9.99</p>
+                        <p class="text-xs text-gray-500 line-through">$15.99</p>
+                    </div>
+                </div>
+            </div>
+            -->
+        </div>
+    </section>
+
+    <!-- 
+      *************************************************
+      * LISTA DE "TODOS LOS PRODUCTOS"  *
+      *************************************************
+    -->
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <h2 class="text-2xl font-bold mb-4 text-gray-800">Todos los Productos</h2>
+        <div id="product-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+            <!-- Los productos se insertarán aquí dinámicamente con JavaScript -->
+        </div>
+        <div id="no-results" class="hidden text-center text-gray-500 mt-10 text-xl">
+            <p>No se encontraron productos que coincidan con tu búsqueda.</p>
+        </div>
+    </main>
+
+    <!-- 
+      *************************************************
+      * MODAL: CARRITO DE COMPRAS      *
+      *************************************************
+    -->
+    <div id="cart-modal" class="modal fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-50 invisible opacity-0">
+        <div class="modal-content bg-white rounded-lg shadow-2xl w-11/12 md:w-1/2 lg:w-1/3 max-w-lg p-6 transform -translate-y-10">
+            <!-- Encabezado del Modal -->
+            <div class="flex justify-between items-center pb-3 border-b">
+                <h2 class="text-2xl font-bold text-gray-800">Carrito de Compras</h2>
+                <button id="close-cart-btn" class="p-1 rounded-full text-gray-500 hover:bg-gray-200">
+                    <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+
+            <!-- Items del Carrito -->
+            <div id="cart-items" class="my-4 max-h-64 overflow-y-auto divide-y divide-gray-200 pr-2">
+                <p id="cart-empty-msg" class="text-gray-500 text-center py-4">Tu carrito está vacío.</p>
+            </div>
+
+            <!-- Pie del Modal (Total y Botón de Comprar) -->
+            <div class="border-t pt-4">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-xl font-bold text-gray-800">Total:</span>
+                    <span id="cart-total" class="text-xl font-bold text-gray-800">$0.00</span>
+                </div>
+                <button id="buy-button" class="w-full bg-green-600 text-white py-3 px-4 rounded-lg text-lg font-semibold hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                    COMPRAR
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 
+      *************************************************
+      * MODAL: RESUMEN Y WHATSAPP           *
+      *************************************************
+    -->
+    <div id="invoice-modal" class="modal fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 invisible opacity-0">
+        <div class="modal-content bg-white rounded-lg shadow-2xl w-11/12 md:w-1/2 lg:w-1/3 max-w-lg p-6 transform -translate-y-10">
+            <!-- Encabezado del Modal -->
+            <div class="flex justify-between items-center pb-3 border-b">
+                <h2 class="text-2xl font-bold text-gray-800">Resumen del Pedido</h2>
+                <button id="close-invoice-btn" class="p-1 rounded-full text-gray-500 hover:bg-gray-200">
+                    <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+
+            <!-- Contenido del "Recibo" -->
+            <div class="my-4">
+                <p class="text-gray-700 mb-3">Este es el resumen de tu pedido. Haz clic en el botón para enviarlo por WhatsApp.</p>
+                <textarea 
+                    id="invoice-text" 
+                    rows="10" 
+                    class="w-full p-3 border border-gray-300 rounded-lg bg-gray-50 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500" 
+                    readonly
+                ></textarea>
+            </div>
+
+            <!-- Botón de WhatsApp -->
+            <a 
+                id="whatsapp-link"
+                href="#"
+                target="_blank"
+                class="flex items-center justify-center gap-3 w-full bg-green-500 text-white py-3 px-4 rounded-lg text-lg font-semibold hover:bg-green-600 transition-colors"
+            >
+                <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.451-4.437-9.887-9.889-9.887-5.451 0-9.887 4.436-9.889 9.887.001 2.231.612 4.279 1.739 6.03l-.351 1.291z"/></svg>
+                Enviar pedido por WhatsApp
+            </a>
+        </div>
+    </div>
+
+    <!-- 
+      *************************************************
+      * JAVASCRIPT (LA LÓGICA)         *
+      *************************************************
+    -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // =================================================================
+            //           1. CONFIGURACIÓN INICIAL Y DATOS DE EJEMPLO
+            // =================================================================
+
+            // -----------------------------------------------------------------
+            //  ¡¡¡ IMPORTANTE !!!
+            //  Reemplaza este número con tu número de WhatsApp.
+            //  Usa el formato internacional, sin "+" ni "00". 
+            // -----------------------------------------------------------------
+            const WHATSAPP_NUMBER = '18091234567'; // <--- CAMBIA ESTE NÚMERO
+
+            // Datos de ejemplo de los productos
+            const mockProducts = [
+                // Productos en Oferta
+                { id: 1, name: 'Camiseta Verde (Oferta)', price: 9.99, oldPrice: 15.99, onSale: true, image: 'https://placehold.co/300x300/22c55e/f0fdf4?text=Camiseta' },
+                { id: 2, name: 'Decoración Colgante', price: 7.50, oldPrice: 12.00, onSale: true, image: 'https://placehold.co/300x300/a3e635/f7fee7?text=Decoración' },
+                { id: 3, name: 'Lámpara de Escritorio LED', price: 22.90, oldPrice: 35.00, onSale: true, image: 'https://placehold.co/300x300/84cc16/ecfccb?text=Lámpara' },
+                { id: 4, name: 'Reloj de Pared Moderno', price: 18.00, oldPrice: 25.00, onSale: true, image: 'https://placehold.co/300x300/f97316/fff7ed?text=Reloj' },
+                { id: 5, name: 'Set de Tazas (Oferta)', price: 12.00, oldPrice: 20.00, onSale: true, image: 'https://placehold.co/300x300/fb923c/fff7ed?text=Tazas' },
+
+                // Productos Regulares
+                { id: 6, name: 'Jean Azul Clásico', price: 45.50, image: 'https://placehold.co/300x300/dbeafe/1e3a8a?text=Jean' },
+                { id: 7, name: 'Zapatillas Deportivas', price: 79.90, image: 'https://placehold.co/300x300/dcfce7/166534?text=Zapatillas' },
+                { id: 8, name: 'Gorra de Béisbol Negra', price: 22.00, image: 'https://placehold.co/300x300/fee2e2/991b1b?text=Gorra' },
+                { id: 9, name: 'Mochila Urbana Gris', price: 55.25, image: 'https://placehold.co/300x300/e5e7eb/1f2937?text=Mochila' },
+                { id: 10, name: 'Lentes de Sol Aviador', price: 30.00, image: 'https://placehold.co/300x300/fef3c7/92400e?text=Lentes' },
+                { id: 11, name: 'Sudadera con Capucha Gris', price: 42.00, image: 'https://placehold.co/300x300/e2e8f0/475569?text=Sudadera' },
+                { id: 12, name: 'Pantalón Cargo Verde', price: 48.00, image: 'https://placehold.co/300x300/4d7c0f/d9f99d?text=Pantalón' },
+                { id: 13, name: 'Cinturón de Cuero', price: 25.00, image: 'https://placehold.co/300x300/d4d4d4/404040?text=Cinturón' },
+                { id: 14, name: 'Bufanda de Lana', price: 19.99, image: 'https://placehold.co/300x300/e0e7ff/3730a3?text=Bufanda' },
+                { id: 15, name: 'Set de Jardinería Verde', price: 33.50, image: 'https://placehold.co/300x300/16a34a/dcfce7?text=Jardín' },
+                { id: 16, name: 'Maceta de Cerámica', price: 14.00, image: 'https://placehold.co/300x300/f1f5f9/334155?text=Maceta' },
+            ];
+
+            // Estado de la aplicación
+            let cart = []; // El carrito será un array de objetos
+
+            // Referencias a elementos del DOM
+            const productGrid = document.getElementById('product-grid');
+            const saleProductGrid = document.getElementById('sale-product-grid');
+            const noResultsDiv = document.getElementById('no-results');
+            const searchInput = document.getElementById('search-input');
+            
+            // Botones de Carrito (móvil y escritorio)
+            const cartButtons = [document.getElementById('cart-button-mobile'), document.getElementById('cart-button-desktop')];
+            const cartCountBadges = [document.getElementById('cart-count-badge-mobile'), document.getElementById('cart-count-badge-desktop')];
+            
+            // Elementos del Modal del Carrito
+            const cartModal = document.getElementById('cart-modal');
+            const closeCartBtn = document.getElementById('close-cart-btn');
+            const cartItems = document.getElementById('cart-items');
+            const cartTotal = document.getElementById('cart-total');
+            const buyButton = document.getElementById('buy-button');
+
+            // Elementos del Modal de Factura/WhatsApp
+            const invoiceModal = document.getElementById('invoice-modal');
+            const closeInvoiceBtn = document.getElementById('close-invoice-btn');
+            const invoiceText = document.getElementById('invoice-text');
+            const whatsappLink = document.getElementById('whatsapp-link');
+
+
+            // =================================================================
+            //           2. FUNCIONES DE RENDERIZADO
+            // =================================================================
+
+            /**
+             * Crea el HTML para una tarjeta de producto (reutilizable)
+             * @param {object} product - El objeto del producto
+             * @param {string} type - 'grid' (normal) o 'sale' (para el carrusel)
+             */
+            function createProductCardHTML(product, type = 'grid') {
+                const priceHTML = product.oldPrice
+                    ? `
+                        <div class="flex items-end gap-2 mt-1">
+                            <p class="text-xl md:text-2xl font-bold text-orange-600">$${product.price.toFixed(2)}</p>
+                            <p class="text-sm text-gray-500 line-through">$${product.oldPrice.toFixed(2)}</p>
+                        </div>
+                    `
+                    : `<p class="text-xl md:text-2xl font-bold text-gray-800 mt-1">$${product.price.toFixed(2)}</p>`;
+
+                const saleBadgeHTML = product.onSale
+                    ? `<div class="absolute top-2 ${type === 'grid' ? 'right-2' : 'left-2'} bg-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase shadow-lg z-10">Oferta</div>`
+                    : '';
+                
+                const cardWidth = type === 'sale' ? 'min-w-[220px] w-[220px]' : '';
+                const imageHeight = type === 'sale' ? 'h-36' : 'h-48';
+                const padding = type === 'sale' ? 'p-3' : 'p-4';
+                const titleSize = type === 'sale' ? 'text-sm' : 'text-base';
+
+                return `
+                    <div class="product-card bg-white rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105 relative ${cardWidth}">
+                        ${saleBadgeHTML}
+                        <img src="${product.image}" alt="${product.name}" class="w-full ${imageHeight} object-cover">
+                        <div class="${padding} flex flex-col flex-grow">
+                            <h3 class="${titleSize} font-semibold text-gray-800 truncate">${product.name}</h3>
+                            ${priceHTML}
+                            <button 
+                                class="add-to-cart-btn mt-4 w-full bg-green-600 text-white py-2 px-3 rounded-lg font-semibold hover:bg-green-700 transition-colors text-sm"
+                                data-id="${product.id}"
+                                data-name="${product.name}"
+                                data-price="${product.price}"
+                            >
+                                Añadir al carrito
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            /**
+             * Renderiza los productos en la cuadrícula principal
+             * @param {Array} products - El array de productos a mostrar
+             */
+            function renderProducts(products) {
+                productGrid.innerHTML = ''; // Limpiar la cuadrícula
+                
+                if (products.length === 0) {
+                    noResultsDiv.classList.remove('hidden');
+                } else {
+                    noResultsDiv.classList.add('hidden');
+                }
+
+                products.forEach(product => {
+                    productGrid.innerHTML += createProductCardHTML(product, 'grid');
+                });
+            }
+            
+            /**
+             * Renderiza los productos en el carrusel de ofertas
+             * @param {Array} products - El array de productos en oferta
+             */
+            function renderSaleProducts(products) {
+                saleProductGrid.innerHTML = ''; // Limpiar la cuadrícula de ofertas
+                products.forEach(product => {
+                    saleProductGrid.innerHTML += createProductCardHTML(product, 'sale');
+                });
+            }
+
+            // =================================================================
+            //           3. LÓGICA DEL CARRITO Y MODALES
+            // =================================================================
+
+            function toggleModal(modal, open) {
+                if (open) {
+                    modal.classList.remove('invisible', 'opacity-0');
+                    modal.querySelector('.modal-content').classList.remove('-translate-y-10');
+                } else {
+                    modal.classList.add('opacity-0');
+                    modal.querySelector('.modal-content').classList.add('-translate-y-10');
+                    setTimeout(() => modal.classList.add('invisible'), 250);
+                }
+            }
+
+            function addToCart(id, name, price) {
+                const existingItem = cart.find(item => item.id === id);
+                if (existingItem) {
+                    existingItem.quantity++;
+                } else {
+                    cart.push({ id, name, price, quantity: 1 });
+                }
+                updateCartUI();
+            }
+
+            function removeFromCart(id) {
+                cart = cart.filter(item => item.id !== id);
+                updateCartUI();
+            }
+
+            function updateCartUI() {
+                cartItems.innerHTML = '';
+                let total = 0;
+                let totalItems = 0;
+
+                if (cart.length === 0) {
+                    cartItems.innerHTML = '<p class="text-gray-500 text-center py-4">Tu carrito está vacío.</p>';
+                    buyButton.disabled = true;
+                } else {
+                    buyButton.disabled = false;
+                    cart.forEach(item => {
+                        const itemTotal = item.price * item.quantity;
+                        total += itemTotal;
+                        totalItems += item.quantity;
+
+                        const cartItemHTML = `
+                            <div class="flex justify-between items-center py-3">
+                                <div class="flex-1 pr-4">
+                                    <h4 class="font-semibold text-gray-800">${item.name}</h4>
+                                    <p class="text-sm text-gray-600">$${item.price.toFixed(2)} x ${item.quantity}</p>
+                                </div>
+                                <div class="text-gray-800 font-semibold w-20 text-right pr-4">
+                                    $${itemTotal.toFixed(2)}
+                                </div>
+                                <button class="remove-from-cart-btn text-red-500 hover:text-red-700 p-1 rounded-full hover:bg-red-100" data-id="${item.id}">
+                                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                </button>
+                            </div>
+                        `;
+                        cartItems.innerHTML += cartItemHTML;
+                    });
+                }
+
+                cartTotal.textContent = `$${total.toFixed(2)}`;
+
+                // Actualizar ambos contadores (móvil y escritorio)
+                cartCountBadges.forEach(badge => {
+                    if (totalItems > 0) {
+                        badge.textContent = totalItems;
+                        badge.classList.remove('hidden');
+                        badge.classList.add('flex'); // Asegurarse de que sea flex para centrar
+                    } else {
+                        badge.classList.add('hidden');
+                        badge.classList.remove('flex');
+                    }
+                });
+            }
+            
+            function generateInvoice() {
+                if (cart.length === 0) return;
+
+                let invoiceString = "¡Hola VerdeOfertas! 👋 Me gustaría hacer el siguiente pedido:\n\n";
+                invoiceString += "==== MI PEDIDO ====\n\n";
+                
+                let total = 0;
+
+                cart.forEach(item => {
+                    const itemTotal = item.price * item.quantity;
+                    total += itemTotal;
+                    invoiceString += `📦 ${item.name}\n`;
+                    invoiceString += `   (Cantidad: ${item.quantity} x $${item.price.toFixed(2)}) = $${itemTotal.toFixed(2)}\n\n`;
+                });
+
+                invoiceString += "===================\n";
+                invoiceString += `TOTAL DEL PEDIDO: $${total.toFixed(2)}\n\n`;
+                invoiceString += "Espero confirmación. ¡Muchas gracias!";
+
+                invoiceText.value = invoiceString;
+
+                const encodedText = encodeURIComponent(invoiceString);
+                whatsappLink.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedText}`;
+
+                toggleModal(cartModal, false);
+                toggleModal(invoiceModal, true);
+            }
+
+
+            // =================================================================
+            //           4. MANEJADORES DE EVENTOS
+            // =================================================================
+
+            // Evento para el buscador (filtra la cuadrícula principal)
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                // Filtra solo de la lista principal de productos
+                const filteredProducts = mockProducts.filter(product => 
+                    product.name.toLowerCase().includes(searchTerm)
+                );
+                // Vuelve a renderizar solo la cuadrícula principal
+                renderProducts(filteredProducts);
+            });
+
+            // Evento para añadir al carrito (usando delegación en todo el body)
+            document.body.addEventListener('click', (e) => {
+                const button = e.target.closest('.add-to-cart-btn');
+                if (button) {
+                    const id = parseInt(button.dataset.id);
+                    const name = button.dataset.name;
+                    const price = parseFloat(button.dataset.price);
+                    addToCart(id, name, price);
+                }
+            });
+
+            // Evento para eliminar del carrito
+            cartItems.addEventListener('click', (e) => {
+                const button = e.target.closest('.remove-from-cart-btn');
+                if (button) {
+                    const id = parseInt(button.dataset.id);
+                    removeFromCart(id);
+                }
+            });
+
+            // Eventos para abrir el modal del carrito (ambos botones)
+            cartButtons.forEach(button => {
+                button.addEventListener('click', () => toggleModal(cartModal, true));
+            });
+            
+            // Eventos para cerrar el modal del carrito
+            closeCartBtn.addEventListener('click', () => toggleModal(cartModal, false));
+            cartModal.addEventListener('click', (e) => {
+                if (e.target === cartModal) toggleModal(cartModal, false);
+            });
+
+            // Evento para el botón de "COMPRAR"
+            buyButton.addEventListener('click', generateInvoice);
+
+            // Eventos para cerrar el modal de factura
+            closeInvoiceBtn.addEventListener('click', () => {
+                toggleModal(invoiceModal, false);
+                cart = [];
+                updateCartUI();
+            });
+
+
+            // =================================================================
+            //           5. INICIALIZACIÓN
+            // =================================================================
+            
+            // Renderizar los productos en oferta
+            const saleProducts = mockProducts.filter(p => p.onSale);
+            renderSaleProducts(saleProducts);
+
+            // Renderizar todos los productos en la cuadrícula principal
+            renderProducts(mockProducts);
+            
+            // Actualizar la UI del carrito
+            updateCartUI();
+
+        });
+    </script>
+
+</body>
+</html>
